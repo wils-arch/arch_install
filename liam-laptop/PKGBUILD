@@ -1,11 +1,11 @@
 pkgname=liam-laptop
-pkgver=0.0.1
+pkgver=1
 pkgrel=1
 pkgdesc="Base system configuration for liam-laptop systems"
 arch=('any')
 url="https://github.com/wils-arch/arch_install"
 license=('MIT')
 depends=(
-    'liam-base' 'vulkan-intel'
+    'liam-base' 'intel-ucode' 'lib32-mesa' 'vulkan-intel' 'nvidia' 'nvidia-utils' 'lib32-nvidia-utils' 'lib32-libpulse' 'optimus-manager' 
 )
 

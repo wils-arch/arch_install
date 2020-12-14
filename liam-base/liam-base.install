@@ -1,0 +1,15 @@
+post_install() {
+    post_upgrade
+}
+
+post_upgrade() {
+    ln -sf /usr/share/zoneinfo/Europe/London "/etc/localtime"
+    hwclock --systohc
+    echo "LANG=en_GB.UTF-8" > /etc/locale.conf
+    sed 's/#en_GB/en_GB/' -i /etc/locale.gen
+    locale-gen
+    touch /etc/vconsole.conf
+    echo "KEYMAP=uk" > /etc/vconsole.conf
+    systemctl enable networkmanager
+    systemctl start networkmanager
+}

@@ -1,12 +1,12 @@
 pkgname=liam-base
-pkgver=0.0.1
+pkgver=1
 pkgrel=1
 pkgdesc="Base system configuration for liam-arch systems"
 arch=('any')
 url="https://github.com/wils-arch/arch_install"
 license=('MIT')
+install=liam-base.install
 depends=(
-    # Base
-    'base' 'linux' 'linux-firmware' 'man-db' 'man-pages' 'nnn' 'zsh' 'neovim' 'openssh' 'refind' 'sudo' 'wget'
+	'base' 'linux' 'linux-firmware' 'man-db' 'man-pages' 'nnn' 'zsh' 'neovim' 'openssh' 'refind' 'sudo' 'wget' 'networkmanager'
 )
 

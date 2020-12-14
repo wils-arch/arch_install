@@ -1,0 +1,11 @@
+pkgname=liam-desktop
+pkgver=1
+pkgrel=1
+pkgdesc="Base system configuration for liam-desktop systems"
+arch=('any')
+url="https://github.com/wils-arch/arch_install"
+license=('MIT')
+depends=(
+    'liam-base' 'amd-ucode' 'nvidia' 'nvidia-utils' 'lib32-nvidia-utils' 'lib32-libpulse' 'konsole' 'google-chrome'        
+)
+
