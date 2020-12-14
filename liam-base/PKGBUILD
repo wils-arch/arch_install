@@ -1,12 +1,26 @@
-pkgname=liam-base
+pkgbase=liam-base
+pkgname=system-config
 pkgver=1
 pkgrel=1
 pkgdesc="Base system configuration for liam-arch systems"
 arch=('any')
 url="https://github.com/wils-arch/arch_install"
 license=('MIT')
-install=liam-base.install
-depends=(
-	'base' 'linux' 'linux-firmware' 'man-db' 'man-pages' 'nnn' 'zsh' 'neovim' 'openssh' 'refind' 'sudo' 'wget' 'networkmanager'
-)
 
+source=('etc-locale.gen'
+        'etc-locale.conf'
+        'etc-vconsole.conf'
+        'sudoers.d-wheel')
+
+system-config() {
+    pkgdesc='System config'
+    depends=('base' 'linux' 'linux-firmware' 'man-db' 'man-pages' 'nnn' 'zsh' 'neovim' 'openssh' 'refind' 'sudo' 'wget' 'networkmanager')
+
+    ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
+    hwclock --systohc
+    install -Dm0644 etc-locale.gen "pkgdir"/etc/locale.gen
+    locale-gen
+    install -Dm0644 etc-locale.conf "$pkgdir"/etc/locale.conf
+    install -Dm0644 etc-vconsole.conf "$pkgdir"/etc/vconsole.conf
+    install -Dm0644 sudoers.d-wheel "$pkgdir"/etc/sudoers.d/wheel
+}

@@ -11,7 +11,7 @@ post_upgrade() {
     touch /etc/vconsole.conf
     echo "KEYMAP=uk" > /etc/vconsole.conf
     touch /home/liam/UCODE.txt
-    echo "Add initrd=boot\cpu_manufacturer-ucode.img as first option in the /boot/refind_linux.conf"
+    echo "Add initrd=boot\cpu_manufacturer-ucode.img as first option in the /boot/refind_linux.conf" > /home/liam/UCODE.txt
     systemctl enable networkmanager
     systemctl start networkmanager
 }
