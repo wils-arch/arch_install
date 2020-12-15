@@ -1,5 +1,4 @@
-pkgbase=liam-base
-pkgname=system-config
+pkgname=liam-base
 pkgver=1
 pkgrel=1
 pkgdesc="Base system configuration for liam-arch systems"
@@ -12,10 +11,9 @@ source=('etc-locale.gen'
         'etc-vconsole.conf'
         'sudoers.d-wheel')
 
-system-config() {
-    pkgdesc='System config'
-    depends=('base' 'linux' 'linux-firmware' 'man-db' 'man-pages' 'nnn' 'zsh' 'neovim' 'openssh' 'refind' 'sudo' 'wget' 'networkmanager')
+depends=('base' 'linux' 'linux-firmware' 'man-db' 'man-pages' 'nnn' 'zsh' 'neovim' 'openssh' 'refind' 'sudo' 'wget' 'networkmanager')
 
+post_install() {
     ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
     hwclock --systohc
     install -Dm0644 etc-locale.gen "pkgdir"/etc/locale.gen
@@ -24,3 +22,8 @@ system-config() {
     install -Dm0644 etc-vconsole.conf "$pkgdir"/etc/vconsole.conf
     install -Dm0644 sudoers.d-wheel "$pkgdir"/etc/sudoers.d/wheel
 }
+
+sha256sums=('a96484f08576ca006022383e92f3fc3bd704659311a48f821e7cb5197825977f'
+            '337ad308b494e9d3261fc6b75fdd450917a2b14930f675824acf358a2dadc815'
+            '733dd6663595cc62936ced5858bd5a4194b2227fe819c7564c8fbc0b8da668b7'
+            '9db7f67e68218e51ee549cba0949aae86b6c14a48ac40b851cf76aba951f70a7')

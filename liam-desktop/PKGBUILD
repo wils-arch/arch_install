@@ -1,5 +1,4 @@
-pkgbase=liam-deskptop
-pkgname=system-config-nvidia
+pkgname=liam-desktop
 pkgver=1
 pkgrel=1
 pkgdesc="Base system configuration for liam-desktop systems"
@@ -7,10 +6,10 @@ arch=('any')
 url="https://github.com/wils-arch/arch_install"
 license=('MIT')
 source=('modprobe.d-nvidia.conf')
+depends=('amd-ucode' 'nvidia' 'nvidia-utils' 'lib32-nvidia-utils' 'lib32-libpulse' 'konsole' 'google-chrome')
 
-system-config-nvidia() {
-    pkgdesc='nvidia stuff'    
-    depends=('liam-base' 'amd-ucode' 'nvidia' 'nvidia-utils' 'lib32-nvidia-utils' 'lib32-libpulse' 'konsole' 'google-chrome')
-
-    install -Dm0644 modprobe.d-nvidia.conf "$pkgdir"/etc/modprobe.d/nvidia.conf
+post_install() {
+	install -Dm0644 modprobe.d-nvidia.conf "$pkgdir"/etc/modprobe.d/nvidia.conf
 }
+
+sha256sums=('c357eff761121e0cdac1c970ab4360bf462721ad8a0c9f526999283559d992ae')
