@@ -1,0 +1,91 @@
+#!/bin/bash
+# WARNING: this script will destroy data on the selected disk.
+# This script can be run by executing the following:
+#   curl -sL https://git.io/vAoV8 | bash
+
+. install.conf
+
+### Set up pacman ###
+pacman -S reflector
+reflector --country "United Kingdom" --latest 25 --age 24 --protocol https --completion-percent 100 --sort rate --verbose --save /etc/pacman.d/mirrorlist
+sed -i 's/#Color/Color/' /etc/pacman.conf
+sed -i 's/#TotalDownload/TotalDownload/' /etc/pacman.conf
+
+### Set up logging ###
+exec 1> >(tee "stdout.log")
+exec 2> >(tee "stderr.log")
+
+### NTP and keyboard setup ###
+timedatectl set-ntp true
+loadkeys uk
+
+### Mount partitions ###
+mount "${ROOT}" /mnt
+mkdir -p /mnt/efi
+mount "${UEFI}" /mnt/efi
+
+### Install and configure the basic system ###
+cat >>/etc/pacman.conf <<EOF
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
+[liam-repo]
+SigLevel = Optional TrustAll
+Server = $REPO_URL
+EOF
+
+pacstrap /mnt "{$INSTALL}" 
+
+genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
+echo "${HOSTNAME}" > /mnt/etc/hostname
+
+cat <<EOF > /etc/hosts
+127.0.0.1       localhost
+::1             localhost
+127.0.1.1       $HOSTNAME.localdomain $HOSTNAME
+EOF
+
+cat >>/mnt/etc/pacman.conf <<EOF
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
+[liam-repo]
+SigLevel = Optional TrustAll
+Server = $REPO_URL
+EOF
+
+### Bootloader ##
+arch-chroot /mnt refind efibootmgr
+
+### Add user ###
+arch-chroot /mnt useradd -mU -s /usr/bin/zsh -G wheel,uucp,video,audio,storage,games,input "$USER"
+arch-chroot /mnt chsh -s /usr/bin/zsh
+arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+echo "$USER:$PASSWORD" | chpasswd --root /mnt
+echo "root:$PASSWORD" | chpasswd --root /mnt
+
+### Refind ###
+PARTUUID_BOOT=$(blkid -s PARTUUID -o value $ROOT)
+arch-chroot /mnt refind-install
+arch-chroot /mnt rm /boot/refind_linux.conf
+arch-chroot /mnt sed -i 's/^timeout.*/timeout 5/' "/efi/EFI/refind/refind.conf"
+arch-chroot /mnt sed -i 's/^#scan_all_linux_kernels.*/scan_all_linux_kernels false/' "/efi/EFI/refind/refind.conf"
+if [ "$CPU_VENDOR" == "intel" ]; then REFIND_MICROCODE="initrd=/intel-ucode.img"
+fi
+if [ "$CPU_VENDOR" == "amd" ]; then REFIND_MICROCODE="initrd=/amd-ucode.img"
+fi
+cat <<EOT >> "/mnt/efi/EFI/refind/refind.conf"
+# alis
+menuentry "Arch Linux" {
+    volume   $PARTUUID_BOOT
+    loader   /vmlinuz-linux
+    initrd   /initramfs-linux.img
+    icon     /EFI/refind/icons/os_arch.png
+    options  "root=PARTUUID=$PARTUUID_BOOT rw add_efi_memmap $REFIND_MICROCODE"
+    submenuentry "Boot using fallback initramfs"
+	      initrd /initramfs-linux-fallback.img"
+    }
+    submenuentry "Boot to terminal"
+	      add_options "systemd.unit=multi-user.target"
+    }
+}"

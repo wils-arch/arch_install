@@ -1,0 +1,15 @@
+mount: /mnt: wrong fs type, bad option, bad superblock on , missing codepage or helper program, or other error.
+mount: /mnt/boot: wrong fs type, bad option, bad superblock on , missing codepage or helper program, or other error.
+error: config file /etc/pacman.d/mirrorlist could not be read: No such file or directory
+==> ERROR: Failed to install packages to new root
+==> ERROR: /mnt is not a mountpoint
+==> WARNING: /mnt is not a mountpoint. This may have undesirable side effects.
+chroot: failed to run command ‘refind-install’: No such file or directory
+==> WARNING: /mnt is not a mountpoint. This may have undesirable side effects.
+chroot: failed to run command ‘useradd’: No such file or directory
+==> WARNING: /mnt is not a mountpoint. This may have undesirable side effects.
+chroot: failed to run command ‘chsh’: No such file or directory
+chpasswd: (user ) pam_start failure 26
+chpasswd: (line 1, user ) password not changed
+chpasswd: (user root) pam_start failure 26
+chpasswd: (line 1, user root) password not changed
