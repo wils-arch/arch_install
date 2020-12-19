@@ -10,9 +10,9 @@
 
 #aur sync --repo liam-repo --root /home/liam/arch_install/local-repo -u
 
-repo-add /home/liam/arch_install/local-repo/liam-repo.db.tar.xz /home/liam/arch_install/liam-desktop/liam-desktop-1-1-any.pkg.tar.zst
+repo-add /home/liam/arch_install/local-repo/liam-repo.db.tar.xz /home/liam/arch_install/liam-base/liam-base-1-1-any.pkg.tar.zst
 
-s3cmd sync --follow-symlinks --acl-public /home/liam/arch_install/liam-desktop/liam-desktop-1-1-any.pkg.tar.zst s3://liam-repo/repo/
+s3cmd sync --follow-symlinks --acl-public /home/liam/arch_install/liam-base/liam-base-1-1-any.pkg.tar.zst s3://liam-repo/repo/
 
 #s3cmd sync --follow-symlinks --acl-public /home/liam/arch_install/local-repo/ s3://liam-repo/repo/
 

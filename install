@@ -6,11 +6,11 @@
 . install.conf
 
 ### Set up pacman ###
-pacman -Sy reflector
+pacman -Sy --noconfirm reflector
 reflector --country "United Kingdom" --latest 25 --age 24 --protocol https --completion-percent 100 --sort rate --verbose --save /etc/pacman.d/mirrorlist
 sed -i 's/#Color/Color/' /etc/pacman.conf
 sed -i 's/#TotalDownload/TotalDownload/' /etc/pacman.conf
-cat <<EOF >> "etc/pacman.conf"      
+cat <<EOF >> "/etc/pacman.conf"      
 [multilib]
 Include = /etc/pacman.d/mirrorlist
 
@@ -33,6 +33,7 @@ mkdir -p /mnt/efi
 mount "${UEFI}" /mnt/efi
 
 ### Install ###
+pacman -Sy 
 pacstrap /mnt $INSTALL 
 
 genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -44,34 +45,24 @@ cat <<EOF >> "/etc/hosts"
 127.0.1.1       $HOSTNAME.localdomain $HOSTNAME
 EOF
 
-cat <<EOF >> "/mnt/etc/pacman.conf"
-[multilib]
-Include = /etc/pacman.d/mirrorlist
-
-[liam-repo]
-SigLevel = Optional TrustAll
-Server = $REPO_URL
-EOF
-
 ### Add user ###
 arch-chroot /mnt useradd -mU -s /usr/bin/zsh -G wheel,uucp,video,audio,storage,games,input "$USER"
 arch-chroot /mnt chsh -s /usr/bin/zsh
 arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 echo "$USER:$PASSWORD" | chpasswd --root /mnt
-echo "root:$PASSWORD" | chpasswd --root /mnt
+echo "root:$ROOT_PASSWORD" | chpasswd --root /mnt
 
 ### Refind ###
 PARTUUID_BOOT=$(blkid -s PARTUUID -o value $ROOT)
 #arch-chroot /mnt refind-install
 arch-chroot /mnt rm /boot/refind_linux.conf
-arch-chroot /mnt sed -i 's/^timeout.*/timeout 5/' "/efi/EFI/refind/refind.conf"
-arch-chroot /mnt sed -i 's/^#scan_all_linux_kernels.*/scan_all_linux_kernels false/' "/efi/EFI/refind/refind.conf"
+#arch-chroot /mnt sed -i 's/^timeout.*/timeout 5/' "/efi/EFI/refind/refind.conf"
+#arch-chroot /mnt sed -i 's/^#scan_all_linux_kernels.*/scan_all_linux_kernels false/' "/efi/EFI/refind/refind.conf"
 if [ "$CPU_VENDOR" == "intel" ]; then REFIND_MICROCODE="initrd=/intel-ucode.img"
 fi
 if [ "$CPU_VENDOR" == "amd" ]; then REFIND_MICROCODE="initrd=/amd-ucode.img"
 fi
 cat <<EOF >> "/mnt/efi/EFI/refind/refind.conf"
-# alis
 menuentry "Arch Linux" {
     volume   $PARTUUID_BOOT
     loader   /boot/vmlinuz-linux
