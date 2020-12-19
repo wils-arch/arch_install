@@ -6,8 +6,7 @@ arch=('any')
 url="https://github.com/wils-arch/arch_install.git"
 license=('MIT')
 
-source=('etc-vconsole.conf'
-        'sudoers.d-wheel')
+source=('sudoers.d-wheel')
 
 depends=(
     'base' 'linux' 'linux-firmware' 
@@ -19,9 +18,7 @@ depends=(
 
 package() {
     install=liam-base.install
-    	install -Dm0644 etc-vconsole.conf $pkgdir/etc/vconsole.conf
     	install -Dm0644 sudoers.d-wheel $pkgdir/etc/sudoers.d/wheel
 }
 
-sha256sums=('733dd6663595cc62936ced5858bd5a4194b2227fe819c7564c8fbc0b8da668b7'
-            '9db7f67e68218e51ee549cba0949aae86b6c14a48ac40b851cf76aba951f70a7')
+sha256sums=('9db7f67e68218e51ee549cba0949aae86b6c14a48ac40b851cf76aba951f70a7')

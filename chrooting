@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+#
+rm -r /home/liam/chroot
+mkdir -p /home/liam/chroot
+mkarchroot -C /etc/pacman.conf /home/liam/chroot/root base-devel
+
+#makechrootpkg -cur /home/liam/chroot
